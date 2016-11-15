@@ -111,11 +111,14 @@ control 'nginx-06' do
   impact 1.0
   title 'Prevent buffer overflow attacks'
   desc 'Buffer overflow attacks are made possible by writing data to a buffer and exceeding that buffer boundary and overwriting memory fragments of a process. To prevent this in nginx we can set buffer size limitations for all clients.'
+
+  # Since Alfresco is a website that allow upload of big files,we set up the client_body_buffer_size to ~1G and disable the client_max_body_size
   describe parse_config_file(nginx_conf, options) do
-    its('client_body_buffer_size') { should eq '1k' }
+    its('client_body_buffer_size') { should eq '1000M' }
   end
+
   describe parse_config_file(nginx_conf, options) do
-    its('client_max_body_size') { should eq '1k' }
+    its('client_max_body_size') { should eq '0' }
   end
   describe parse_config_file(nginx_hardening, options) do
     its('client_header_buffer_size') { should eq '1k' }
